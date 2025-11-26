@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = "gorse"
-  s.version = "0.4.0"
+  s.version = "0.5.0"
   s.summary = "Ruby SDK for Gorse recommender system"
   s.description = "Ruby SDK for Gorse recommender system"
   s.authors = ["Zhenghao Zhang"]
