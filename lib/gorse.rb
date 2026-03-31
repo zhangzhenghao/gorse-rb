@@ -209,6 +209,7 @@ class Gorse
     RowAffected.from_json(request('DELETE', "/api/feedback/#{escape(user_id)}/#{escape(item_id)}"))
   end
 
+  # Get recommendation for a user.
   def get_recommend(user_id, category: nil, n: nil, offset: nil)
     if category.nil? && n.nil? && offset.nil?
       return JSON.parse(request('GET', "/api/recommend/#{escape(user_id)}"))
@@ -221,6 +222,19 @@ class Gorse
     path = "/api/recommend/#{escape(user_id)}/#{cat_seg}"
     path += "?#{query}" unless query.empty?
     JSON.parse(request('GET', path))
+  end
+
+  # Get recommendation with scores for a user.
+  # Uses X-API-Version: 2 header to return scores.
+  def get_recommend_with_scores(user_id, category: nil, n: nil, offset: nil)
+    cat_seg = (category || '').to_s
+    qs = []
+    qs << ["n", n] unless n.nil?
+    qs << ["offset", offset] unless offset.nil?
+    query = qs.map { |k, v| "#{k}=#{URI.encode_www_form_component(v.to_s)}" }.join('&')
+    path = "/api/recommend/#{escape(user_id)}/#{cat_seg}"
+    path += "?#{query}" unless query.empty?
+    JSON.parse(request('GET', path, nil, { 'X-API-Version' => '2' }))
   end
 
   def get_latest_items(user_id: nil, category: nil, n:, offset: 0)
@@ -307,11 +321,12 @@ class Gorse
     URI.encode_www_form_component(s.to_s)
   end
 
-  def request(method, path, body = nil)
+  def request(method, path, body = nil, extra_headers = {})
     base = @endpoint.end_with?('/') ? @endpoint : @endpoint + '/'
     uri = URI.join(base, path.sub(/^\//, ''))
     headers = { 'Content-Type' => 'application/json', 'Accept' => 'application/json' }
     headers['X-API-Key'] = @api_key if @api_key && !@api_key.empty?
+    headers.merge!(extra_headers)
 
     req = case method.upcase
           when 'GET' then Net::HTTP::Get.new(uri, headers)
