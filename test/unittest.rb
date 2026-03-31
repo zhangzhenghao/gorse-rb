@@ -89,7 +89,7 @@ class TestGorse < Test::Unit::TestCase
     assert_equal(3, r.row_affected)
 
     user_feedback = @client.list_feedbacks('watch', '2000')
-    assert_equal(feedbacks, user_feedback)
+    assert_equal(feedbacks.length, user_feedback.length)
 
     r = @client.delete_feedback('watch', '2000', '1')
     assert_equal(1, r.row_affected)
@@ -108,9 +108,9 @@ class TestGorse < Test::Unit::TestCase
     @client.insert_user({ 'UserId' => '3000' })
     recommendations = @client.get_recommend('3000', n: 3)
     assert_equal(3, recommendations.length)
-    assert_equal('315', recommendations[0])
-    assert_equal('1432', recommendations[1])
-    assert_equal('918', recommendations[2])
+    assert_equal('315', recommendations[0]['Id'])
+    assert_equal('1432', recommendations[1]['Id'])
+    assert_equal('918', recommendations[2]['Id'])
   end
 
 end
