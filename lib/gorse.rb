@@ -210,9 +210,6 @@ class Gorse
   end
 
   # Get recommendation for a user.
-  def get_recommend(user_id, category: nil, n: nil, offset: nil)
-    if category.nil? && n.nil? && offset.nil?
-      return JSON.parse(request('GET', "/api/recommend/#{escape(user_id)}"))
     end
     cat_seg = (category || '').to_s
     qs = []
@@ -226,7 +223,7 @@ class Gorse
 
   # Get recommendation with scores for a user.
   # Uses X-API-Version: 2 header to return scores.
-  def get_recommend_with_scores(user_id, category: nil, n: nil, offset: nil)
+  def get_recommend(user_id, category: nil, n: nil, offset: nil)
     cat_seg = (category || '').to_s
     qs = []
     qs << ["n", n] unless n.nil?
