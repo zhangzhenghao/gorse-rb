@@ -210,19 +210,6 @@ class Gorse
   end
 
   # Get recommendation for a user.
-    end
-    cat_seg = (category || '').to_s
-    qs = []
-    qs << ["n", n] unless n.nil?
-    qs << ["offset", offset] unless offset.nil?
-    query = qs.map { |k, v| "#{k}=#{URI.encode_www_form_component(v.to_s)}" }.join('&')
-    path = "/api/recommend/#{escape(user_id)}/#{cat_seg}"
-    path += "?#{query}" unless query.empty?
-    JSON.parse(request('GET', path))
-  end
-
-  # Get recommendation with scores for a user.
-  # Uses X-API-Version: 2 header to return scores.
   def get_recommend(user_id, category: nil, n: nil, offset: nil)
     cat_seg = (category || '').to_s
     qs = []
