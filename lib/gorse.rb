@@ -295,6 +295,10 @@ class Gorse
     JSON.parse(request('GET', "/api/items?n=#{n}&cursor=#{URI.encode_www_form_component(cursor)}"))
   end
 
+  def search_items(query, n: 10)
+    JSON.parse(request('GET', "/api/items?q=#{URI.encode_www_form_component(query)}&n=#{n}"))
+  end
+
   def delete_item(item_id)
     RowAffected.from_json(request('DELETE', "/api/item/#{escape(item_id)}"))
   end

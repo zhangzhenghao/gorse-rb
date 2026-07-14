@@ -37,6 +37,10 @@ class TestGorse < Test::Unit::TestCase
   end
 
   def test_items
+    search_result = @client.search_items('Toy Story', n: 3)
+    assert(!search_result['Items'].empty?)
+    assert_equal('Toy Story (1995)', search_result['Items'][0]['Comment'])
+
     data = @client.get_items(n: 3)
     cursor = data['Cursor']
     items = data['Items']
