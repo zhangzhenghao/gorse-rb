@@ -110,8 +110,17 @@ class TestGorse < Test::Unit::TestCase
 
   def test_recommend
     @client.insert_user({ 'UserId' => '3000' })
+    recommendations = @client.get_recommend('3000', n: 3)
+    assert_equal(3, recommendations.length)
+    assert_equal('315', recommendations[0]['Id'])
+    assert_equal('1432', recommendations[1]['Id'])
+    assert_equal('918', recommendations[2]['Id'])
+  end
+
+  def test_recommend_with_multiple_categories
+    @client.insert_user({ 'UserId' => '4000' })
     recommendations = @client.get_recommend(
-      '3000', category: ['Drama', 'Comedy'], n: 3, offset: 0,
+      '4000', category: ['Drama', 'Comedy'], n: 3, offset: 0,
       write_back_type: 'recommend', write_back_delay: '1h')
     assert_equal(3, recommendations.length)
     recommendations.each do |recommendation|
