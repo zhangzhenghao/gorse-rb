@@ -210,13 +210,15 @@ class Gorse
   end
 
   # Get recommendation for a user.
-  def get_recommend(user_id, category: nil, n: nil, offset: nil)
-    cat_seg = (category || '').to_s
+  def get_recommend(user_id, category: nil, n: nil, offset: nil, write_back_type: nil, write_back_delay: nil)
     qs = []
+    Array(category).each { |value| qs << ["category", value] unless value.nil? || value.to_s.empty? }
+    qs << ["write-back-type", write_back_type] unless write_back_type.nil?
+    qs << ["write-back-delay", write_back_delay] unless write_back_delay.nil?
     qs << ["n", n] unless n.nil?
     qs << ["offset", offset] unless offset.nil?
     query = qs.map { |k, v| "#{k}=#{URI.encode_www_form_component(v.to_s)}" }.join('&')
-    path = "/api/recommend/#{escape(user_id)}/#{cat_seg}"
+    path = "/api/recommend/#{escape(user_id)}"
     path += "?#{query}" unless query.empty?
     JSON.parse(request('GET', path, nil, { 'X-API-Version' => '2' }))
   end
